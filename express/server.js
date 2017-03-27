@@ -19,13 +19,41 @@ app.get("/bbs/:skip/:offset",(requeest,response)=>{
 	readAll(response,skip,offset);
 });
 
+app.post("/bbs",(requeest,response)=>{
+	var postdata = request.body;	//주소줄 외의 변수 , 데이터, 파일 등등등 
+	createData(response, postdata);
+
+});
+
 http.createServer(app).listen(8080,()=>{
 	console.log('Server running .....');
 });
 
 //express 모듈로 node 서버를 띄우는 과정. 생 노드로 하게되면 주소 줄에서 데이터를 가져와 쪼개주고 해야하는데
 //api형태로 express가 제공한다.
-
+function send500(response){
+	response.writeHead(500, {'Content-Type':'text/html'});
+	response.end('500 Server inter Error');
+}
+function createData(response, data){
+	console.log("insert createData function");
+	console.log(data);
+	data = JSON.parse(data);
+	client.connect('mongodb://localhost:27017/bbs', (error, db) => {	//bbs노드가 없으면 생성해주고 있으면 리턴해준다.
+	    if(error) {
+	        console.log(error);
+	        send500(response);
+	    } else {
+	        // 1. 입력할 document 생성
+	        var post = {title : data.title ,content : data.content , name: data.name};
+	        // 2. student 컬렉션의 insert( ) 함수에 입력
+	        db.collection('qna').insert(post);
+	        db.close();
+	        data = "<html><head><title>결과</title></head><body>등록되었습니다.</body></html>"
+	        send200(response,data,'text/html');
+	    }
+	});
+}
 function readAll(response,skip,offset){//skip 만큼 제외하고 offset만큼 가져온다.
 	var data = '';
 	client.connect('mongodb://localhost:27017/bbs', function(error, db){
