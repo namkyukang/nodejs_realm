@@ -7,4 +7,5 @@ router.get('/', function(req, res, next) {
 });
 // /view에 있는 index.jade파일을 연결해준다. - 문법을 만들어주는데 그 형식이  jade
 // mvc 형식으로 다 쪼개져 있다. index.jade -> extends layout.jade ....
+// router를 거쳐서 view를 거쳐 화면을 준다.
 module.exports = router;
