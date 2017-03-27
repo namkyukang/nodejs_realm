@@ -6,11 +6,16 @@ var app = express(); //요래 되면 실행된 결과값이 더해진다.
 
 //app.use를 하게 되면 주소랑 상관없이 모든걸 app.use에서 catch를 한다. 그래서 app.get을 인식 못함 
 //get방식으로 들어온 bbs url 에 대해서 처리해준다.
+//express를 이용한 get처리
 app.get("/bbs",(requeest,response)=>{
 	//response.send('안녕 bbs야 환영해');
-
-	var skip = parseInt(undefined);
-	var offset = parseInt(undefined);
+	readAll(response,NaN, NaN);
+});
+//express를 이용한 REST Ful 처리 
+app.get("/bbs/:skip/:offset",(requeest,response)=>{
+	//response.send('안녕 bbs야 환영해');
+	var skip = parseInt(requeest.params.skip);
+	var offset = parseInt(requeest.params.offset);
 	readAll(response,skip,offset);
 });
 
