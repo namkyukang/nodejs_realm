@@ -2,7 +2,12 @@ var http = require('http');
 var express = require('express');
 var client = require('mongodb').MongoClient;
 //파일 내의 코드를 가져와서 코드를 실행시켜서 집어 넣는다.
+var bodyParser = require('body-parser');
 var app = express(); //요래 되면 실행된 결과값이 더해진다.
+//일반적인 쿼리 스트링 형태를 처리하는 파서 모듈 사용
+app.use(bodyParser.urlencoded({extended: false}))
+//json을 처리하는 parser 모듈 사용
+app.use(bodyParser.json())
 
 //app.use를 하게 되면 주소랑 상관없이 모든걸 app.use에서 catch를 한다. 그래서 app.get을 인식 못함 
 //get방식으로 들어온 bbs url 에 대해서 처리해준다.
@@ -19,7 +24,7 @@ app.get("/bbs/:skip/:offset",(requeest,response)=>{
 	readAll(response,skip,offset);
 });
 
-app.post("/bbs",(requeest,response)=>{
+app.post("/bbs",(request,response)=>{
 	var postdata = request.body;	//주소줄 외의 변수 , 데이터, 파일 등등등 
 	createData(response, postdata);
 
@@ -38,7 +43,7 @@ function send500(response){
 function createData(response, data){
 	console.log("insert createData function");
 	console.log(data);
-	data = JSON.parse(data);
+	//data = JSON.parse(data);
 	client.connect('mongodb://localhost:27017/bbs', (error, db) => {	//bbs노드가 없으면 생성해주고 있으면 리턴해준다.
 	    if(error) {
 	        console.log(error);
